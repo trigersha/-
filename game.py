@@ -3,15 +3,24 @@
 from gameparts import Board
 from gameparts.exceptions import CellOccupiedError, FieldIndexError
 
+
+# Вот она — новая функция!
+def save_result(result):
+    with open('result.txt', 'a') as cm:
+        cm.write(result + '\n')
+        
+
+
 def main():
     game = Board()
+    # Первыми ходят крестики
     current_player = 'X'
     running = True
     game.display()
 
     while running:
 
-        print(f'Ход делают {current_player}')
+        print(f'Ходит {current_player}')
 
         while True:
             try:
@@ -32,7 +41,7 @@ def main():
                 continue
             except CellOccupiedError:
                 print('Ячейка занята.')
-                print('Пожалуйста, введите другие координаты.')
+                print('Введите другие координаты.')
                 continue
             except ValueError:
                 print('Буквы вводить нельзя. Только числа.')
@@ -45,15 +54,25 @@ def main():
 
         game.make_move(row, column, current_player)
         game.display()
-        # После каждого хода надо делать проверку на победу и на ничью
         if game.check_win(current_player):
-            print(f'Победили {current_player}.')
+            # Сформировать строку
+            result = f'Победили {current_player}.'
+            # Вывести строку на печать
+            print(result)
+            # Добавить строку в файл
+            save_result(result)
             running = False
         elif game.is_board_full():
-            print('Ничья!')
+            # Сформировать строку
+            result = 'Ничья!'
+            # Вывести строку на печать
+            print(result)
+            # Добавить строку в файл
+            save_result(result)
             running = False
 
         current_player = 'O' if current_player == 'X' else 'X'
+
 
 if __name__ == '__main__':
     main()
